@@ -9,7 +9,7 @@
 ## If there are schema version changes that can be evolved, see the podio documentation
 ## for an example: https://github.com/hegner/podio/blob/master/tests/schema_evolution.yaml
 ##
-schema_version: 700
+schema_version: 800
 
 options :
   # should getters / setters be prefixed with get / set?
@@ -192,6 +192,16 @@ components:
       - std::array<double,16> transform   // row-wise 4x4 affine transform [R T; 0 1] with 3x3 rotation matrix R and translation column 3-vector T
 
 datatypes:
+
+  edm4eic::Tensor:
+    Description: "Tensor type for use in training in inference of ML models"
+    Author: "D. Kalinkin"
+    Members:
+      - int32_t           elementType     // Data type in the same encoding as "ONNXTensorElementDataType", 1 - float, 7 - int64
+    VectorMembers:
+      - int64_t           shape           // Vector of tensor lengths along its axes
+      - float             floatData       // Iff elementType==1, values are stored here
+      - int64_t           int64Data       // Iff elementType==7, values are stored here
 
   ## ==========================================================================
   ## Particle info
@@ -571,3 +581,12 @@ datatypes:
     OneToOneRelations:
       - edm4hep::RawCalorimeterHit rawHit   // reference to the digitized calorimeter hit
       - edm4hep::SimCalorimeterHit simHit   // reference to the simulated calorimeter hit
+
+  edm4eic::TrackClusterMatch:
+    Description: "Match between a Cluster and a Track"
+    Author: "D. Anderson, D. Brandenburg, D. Kalinkin, S. Joosten"
+    Members:
+      - float                 weight        // weight of this association
+    OneToOneRelations:
+      - edm4eic::Cluster  cluster           // reference to the cluster
+      - edm4eic::Track track                // reference to the track
